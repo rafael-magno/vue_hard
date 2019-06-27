@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<base href = "/vue_hard/" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>CRUD</title>
+</head>
+<body>
+	<div id="app">
+		<nav class="navbar navbar-default">
+			<div class="container-fluid">
+				<div class="navbar-header">
+				  	<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+				    	<span class="icon-bar"></span>
+				    	<span class="icon-bar"></span>
+				    	<span class="icon-bar"></span>
+				  	</button>
+				  	<a class="navbar-brand" href="#">VUE HARD</a>
+				</div>
+				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+					<ul id="menuSuperior" class="nav navbar-nav">
+						<li><a href="#/turno">Turno</a></li>
+						<li><a href="#/disciplina">Disciplina</a></li>
+						<li><a href="#/aluno">Aluno</a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+		<router-view></router-view>
+	</div>
+	<link rel="stylesheet" type="text/css" href="assets/css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="assets/css/jquery-ui.css">
+	<link rel="stylesheet" type="text/css" href="assets/css/fontawsome.css">
+	<script type="text/javascript" src="assets/js/jquery-2.1.3.min.js"></script>
+	<script type="text/javascript" src="assets/js/jquery-ui.js"></script>
+	<script type="text/javascript" src="assets/js/meiomask.js"></script>
+	<script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="assets/js/jquery.form.js"></script>
+	<script type="text/javascript" src="assets/js/jquery.validate.js"></script>
+	<script type="text/javascript" src="assets/js/vue.js"></script>
+	<script type="text/javascript" src="assets/js/vue-router.js"></script>
+    <script type="text/javascript" src="assets/js/http-vue-loader.js"></script>
+    <script type="text/javascript" src="assets/js/main.js"></script>
+</body>
+</html>
