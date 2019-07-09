@@ -1,27 +1,34 @@
 <?php
+ 
+try {
+	ob_start();
+	
+	require_once 'vendor/autoload.php';
 
-session_start();
+	$url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+	$url = str_replace(BASE_URL, '', $url);
+	list($classe, $metodo) = array_values(array_filter(explode('/', $url)));
 
-require_once 'model/Model.php';
-require_once 'controller/Controller.php';
-require_once 'helpers.php';
-require_once 'constantes.php';
+	$classe .= 'Controller';
 
-$uri_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$uri_segments = explode('/', $uri_path);
+	$objeto = new $classe();
 
-$classe = $uri_segments[3];
-$metodo = $uri_segments[4];
+	$reflectionMethod = new ReflectionMethod($classe, $metodo);
+	$parametros = [];
 
-$classe .= 'Controller';
+	foreach ($reflectionMethod->getParameters() as $param) {
+	    $parametros[] = $_REQUEST[$param->getName()];
+	}
 
-require_once "controller/$classe.php";
-
-$obj = new $classe();
-
-if (!$metodo)
-{
-    $metodo = 'index';
+	$retorno = call_user_func_array([$objeto, $metodo], $parametros);
+	$retorno['status'] = true;
+} catch (FriendlyException $e) {
+	$retorno['status'] = false;
+	$retorno['message'] = $e->getMessage();
+} catch (Exception $e) {
+	$retorno['status'] = false;
+	$retorno['message'] = "Ocorreu um erro inesperado, por favor tente novamente.";
+} finally {
+	$output = ob_get_clean();
+	echo json_encode($retorno);
 }
-
-$obj->$metodo();

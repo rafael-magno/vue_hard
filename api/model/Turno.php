@@ -1,117 +1,45 @@
 <?php
 
-class Turno extends Model implements JsonSerializable
+use Base\Turno as BaseTurno;
+
+class Turno extends BaseTurno
 {
-    private $idturno;
-    private $nome;
+    private $query;
     
-    private $total;
-
-    public function __construct($inicializarClassePai = true)
+    function __construct()
     {
-        parent::__construct($inicializarClassePai, $this);
+        $this->query = new TurnoQuery();
     }
-
+    
     public function listarTodos($pagina = 0, $totalPorPagina = 0, $termoPesquisa = '')
     {
-        $sql = 'SELECT {campos} FROM turno';
+        $this->query->orderByIdturno('desc');
         if (trim($termoPesquisa)) {
-            $termoPesquisa = $this->db->real_escape_string($termoPesquisa);
-            $sql .= " WHERE nome LIKE '%$termoPesquisa%'";
+            $this->query->filterByNome($termoPesquisa);
         }
-        $sqlDados = str_replace('{campos}', 'idturno, nome', $sql);
         if ($pagina) {
-            $sqlTotal = str_replace('{campos}', 'COUNT(idturno) AS total', $sql);
-            $sqlDados .= ' LIMIT '.(($pagina - 1) * $totalPorPagina).', '.$totalPorPagina;
-            $retorno['total'] = $this->fetchRow($sqlTotal)->getTotal();
+             $retorno['total'] = $this->query->count();
+             $this->query->paginate($pagina, $totalPorPagina);
         }
-        $retorno['dados'] = $this->fetchRows($sqlDados);
+        $retorno['dados'] = $this->query->find()->toArray();
         return $retorno;
     }
 
     public function buscarDadosId($id)
-    {
-        $sql = 'SELECT idturno, nome FROM turno WHERE idturno = '.(int)$id;
-        return $this->fetchRow($sql);
+    {        
+        return $this->query->findPK($id)->toArray();
     }
 
     public function salvarDados($dados)
     {
-        $this->setIdturno($dados['idturno']);
-        $this->setNome($dados['nome']);
-        return $this->salvar();
+        $turno = $this->query->findPK($dados['idturno']);
+        $turno = !$turno ? $this : $turno;
+        
+        $turno->setNome($dados['nome'])->save();
     }
 
     public function removerDados($id)
     {
-        $this->setIdturno($id);
-        return $this->remover();
-    }
-    
-    public function jsonSerialize()
-    {
-        $vars = get_object_vars($this);
-
-        return $vars;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTotal()
-    {
-        return $this->total;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getIdturno()
-    {
-        return $this->idturno;
-    }
-
-    /**
-     * @param mixed $idturno
-     *
-     * @return self
-     */
-    public function setIdturno($idturno)
-    {
-        $this->idturno = $idturno;
-
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getNome()
-    {
-        return $this->nome;
-    }
-
-    /**
-     * @param mixed $nome
-     *
-     * @return self
-     */
-    public function setNome($nome)
-    {
-        $this->nome = $nome;
-
-        return $this;
-    }
-
-    /**
-     * @param mixed $total
-     *
-     * @return self
-     */
-    public function setTotal($total)
-    {
-        $this->total = $total;
-
-        return $this;
+        return $this->query->findPK($id)->delete();
     }
 }

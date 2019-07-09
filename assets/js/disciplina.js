@@ -1,60 +1,62 @@
 module.exports = {
-	created(){
-		this.buscarListagem(1)
-  	},
   	data() {
   		return {
-  			disciplinas: [],
-  			disciplina: {},
-  			pagina: 0,
+  			iddisciplina: 0,
+  			pagina: 1,
   			totalPaginas: 1,
   			totalPorPagina: 20,
   			total: 0,
             termoPesquisa: '',
-            listagemFiltrada: false,
+            termoPesquisaInput: '',
             mostrarForm: false
   		}
   	},
     methods: {
-        cadastrarNovoDisciplina() {
-            this.mostrarForm = true
-            this.disciplina = {}
-        },
-        limparFiltro() {
-            this.termoPesquisa = ''
-            this.totalPaginas = 1
-            this.buscarListagem(1)
-        },
-        buscarListagem(pagina) {
-        	if (pagina >= 1 && pagina <= this.totalPaginas) {
-	        	listagem = sendRequest('api/Disciplina/buscarListagem', {pagina, totalPorPagina: this.totalPorPagina, termoPesquisa: this.termoPesquisa})
-                this.listagemFiltrada = this.termoPesquisa != ''
-	        	this.disciplinas = listagem.dados
-	        	this.total = listagem.total
-	        	this.pagina = pagina
-	        	this.totalPaginas = Math.ceil(this.total / this.totalPorPagina)
-	        	if (this.totalPaginas && this.pagina > this.totalPaginas) {
-	        		this.buscarListagem(this.totalPaginas)
-	        	}
-	        }
+        irParaListagem() {
+            this.mostrarForm = false
+            this.iddisciplina = 0
         },
         salvarDados(event) {
         	retorno = sendFormRequest(event.target.form);
-          if (retorno && retorno.status) {
-        		this.disciplina = {}
+            if (retorno && retorno.status) {
                 this.mostrarForm = false
-        		this.limparFiltro()
+        		this.refreshDisciplinas()
         	}
-        },
-        buscarDadosEdicao(iddisciplina) {
-            this.disciplina = sendRequest('api/Disciplina/buscarDadosEdicao', {iddisciplina})
-            this.mostrarForm = true
         },
         removerDados(iddisciplina) {
-          retorno = sendRequest('api/Disciplina/removerDados', {iddisciplina}, 'POST')
-          if (retorno && retorno.status) {
-        		this.buscarListagem(this.pagina)
+            retorno = sendRequest('api/Disciplina/removerDados', {iddisciplina}, 'POST')
+            if (retorno && retorno.status) {
+                this.refreshDisciplinas()
         	}
+        },
+        refreshDisciplinas() {
+            this.total++
+        }
+    },
+    computed: {
+        disciplinas() {
+            dadosRequest = {pagina: this.pagina, totalPorPagina: this.totalPorPagina, termoPesquisa: this.termoPesquisa}
+            dadosListagem = sendRequest('api/Disciplina/buscarListagem', dadosRequest)
+            this.total = dadosListagem.total
+            this.totalPaginas = Math.ceil(this.total / this.totalPorPagina)
+            if (this.totalPaginas && this.pagina > this.totalPaginas) {
+                this.pagina = this.totalPaginas
+                dadosRequest.pagina = this.pagina
+                dadosListagem = sendRequest('api/Disciplina/buscarListagem', dadosRequest)
+            }
+            
+            return dadosListagem.dados;
+        },
+        disciplina() {
+            if (this.iddisciplina > 0) {
+                this.mostrarForm = true
+                return sendRequest('api/Disciplina/buscarDadosEdicao', {iddisciplina: this.iddisciplina})
+            }
+            
+            return {
+                iddisciplina: '',
+                nome: ''
+            }
         }
     }
 }

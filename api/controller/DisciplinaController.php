@@ -1,8 +1,6 @@
 <?php
 
-require_once 'model/Disciplina.php';
-
-class DisciplinaController extends Controller
+class DisciplinaController
 {
     private $disciplina;
 
@@ -11,31 +9,25 @@ class DisciplinaController extends Controller
         $this->disciplina = new Disciplina();
     }
 
-    public function buscarListagem()
-    {
-        $listagemDisciplina = $this->disciplina->listarTodos($_GET['pagina'], $_GET['totalPorPagina'], $_GET['termoPesquisa']);
-        
-        $this->json($listagemDisciplina);
+    public function buscarListagem($pagina, $totalPorPagina, $termoPesquisa)
+    { 
+        $listagemDisciplina = $this->disciplina->listarTodos($pagina, $totalPorPagina, $termoPesquisa);
+        return $listagemDisciplina;
     }
 
-    public function buscarDadosEdicao()
+    public function buscarDadosEdicao($iddisciplina)
     {
-        $dadosDisciplina = $this->disciplina->buscarDadosId($_GET['iddisciplina']);
-
-        $this->json($dadosDisciplina);
+        $dadosDisciplina = $this->disciplina->buscarDadosId($iddisciplina);
+        return $dadosDisciplina;
     }
 
     public function salvarDados()
     {
-        $retorno['status'] = $this->disciplina->salvarDados($_POST);
-
-        $this->json($retorno);
+        $this->disciplina->salvarDados($_POST);
     }
 
-    public function removerDados()
+    public function removerDados($iddisciplina)
     {
-        $retorno['status'] = $this->disciplina->removerDados($_POST['iddisciplina']);
-        
-        $this->json($retorno);
+        $this->disciplina->removerDados($iddisciplina);
     }
 }

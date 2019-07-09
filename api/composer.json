@@ -1,0 +1,9 @@
+{
+    "require": {
+        "propel/propel": "~2.0@dev"
+    },
+    "autoload": {
+        "classmap": ["controller/", "model/", "exception/"],
+        "files": ["constantes.php", "helpers.php", "db.php"]
+    }
+}

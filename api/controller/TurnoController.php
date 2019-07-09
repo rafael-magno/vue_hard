@@ -1,8 +1,6 @@
 <?php
 
-require_once 'model/Turno.php';
-
-class TurnoController extends Controller
+class TurnoController
 {
     private $turno;
 
@@ -11,31 +9,25 @@ class TurnoController extends Controller
         $this->turno = new Turno();
     }
 
-    public function buscarListagem()
-    {
-        $listagemTurno = $this->turno->listarTodos($_GET['pagina'], $_GET['totalPorPagina'], $_GET['termoPesquisa']);
-        
-        $this->json($listagemTurno);
+    public function buscarListagem($pagina, $totalPorPagina, $termoPesquisa)
+    { 
+        $listagemTurno = $this->turno->listarTodos($pagina, $totalPorPagina, $termoPesquisa);
+        return $listagemTurno;
     }
 
-    public function buscarDadosEdicao()
+    public function buscarDadosEdicao($idturno)
     {
-        $dadosTurno = $this->turno->buscarDadosId($_GET['idturno']);
-
-        $this->json($dadosTurno);
+        $dadosTurno = $this->turno->buscarDadosId($idturno);
+        return $dadosTurno;
     }
 
     public function salvarDados()
     {
-        $retorno['status'] = $this->turno->salvarDados($_POST);
-
-        $this->json($retorno);
+        $this->turno->salvarDados($_POST);
     }
 
-    public function removerDados()
+    public function removerDados($idturno)
     {
-        $retorno['status'] = $this->turno->removerDados($_POST['idturno']);
-        
-        $this->json($retorno);
+        $this->turno->removerDados($idturno);
     }
 }

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="default" defaultIdMethod="native" defaultPhpNamingMethod="underscore">
+  <table name="aluno" idMethod="native" phpName="Aluno">
+    <column name="idaluno" phpName="Idaluno" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="nome" phpName="Nome" type="VARCHAR" size="45" required="true"/>
+    <column name="turno_idturno" phpName="TurnoIdturno" type="INTEGER" required="true"/>
+    <column name="created_at" phpName="CreatedAt" type="TIMESTAMP"/>
+    <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP"/>
+    <column name="deleted_at" phpName="DeletedAt" type="TIMESTAMP"/>
+    <foreign-key foreignTable="turno" name="fk_aluno_turno1">
+      <reference local="turno_idturno" foreign="idturno"/>
+    </foreign-key>
+    <index name="fk_aluno_turno1_idx">
+      <index-column name="turno_idturno"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="aluno_has_disciplina" idMethod="native" phpName="AlunoHasDisciplina">
+    <column name="aluno_idaluno" phpName="AlunoIdaluno" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="disciplina_iddisciplina" phpName="DisciplinaIddisciplina" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="created_at" phpName="CreatedAt" type="TIMESTAMP"/>
+    <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP"/>
+    <column name="deleted_at" phpName="DeletedAt" type="TIMESTAMP"/>
+    <foreign-key foreignTable="aluno" name="fk_aluno_has_disciplina_aluno1">
+      <reference local="aluno_idaluno" foreign="idaluno"/>
+    </foreign-key>
+    <foreign-key foreignTable="disciplina" name="fk_aluno_has_disciplina_disciplina1">
+      <reference local="disciplina_iddisciplina" foreign="iddisciplina"/>
+    </foreign-key>
+    <index name="fk_aluno_has_disciplina_disciplina1_idx">
+      <index-column name="disciplina_iddisciplina"/>
+    </index>
+    <index name="fk_aluno_has_disciplina_aluno1_idx">
+      <index-column name="aluno_idaluno"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="cliente" idMethod="native" phpName="Cliente">
+    <column name="idcliente" phpName="Idcliente" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="nome_cliente" phpName="NomeCliente" type="VARCHAR" size="40" required="true"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="disciplina" idMethod="native" phpName="Disciplina">
+    <column name="iddisciplina" phpName="Iddisciplina" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="nome" phpName="Nome" type="VARCHAR" size="45" required="true"/>
+    <column name="created_at" phpName="CreatedAt" type="TIMESTAMP"/>
+    <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP"/>
+    <column name="deleted_at" phpName="DeletedAt" type="TIMESTAMP"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="turno" idMethod="native" phpName="Turno">
+    <column name="idturno" phpName="Idturno" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="nome" phpName="Nome" type="VARCHAR" size="45" required="true"/>
+    <column name="created_at" phpName="CreatedAt" type="TIMESTAMP"/>
+    <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP"/>
+    <column name="deleted_at" phpName="DeletedAt" type="TIMESTAMP"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+</database>
